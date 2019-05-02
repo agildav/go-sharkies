@@ -8,6 +8,7 @@ import (
 	"github.com/agildav/go-boilerplate/config"
 	"github.com/agildav/go-boilerplate/db"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 // // // // // // // // // // // // // // // // // // // // // //
@@ -16,6 +17,8 @@ import (
 func Init() (*echo.Echo, map[string]string) {
 	env := config.Init()
 	e := echo.New()
+	e.Pre(middleware.RemoveTrailingSlash())
+
 	db.Init(env)
 
 	/*

@@ -12,6 +12,9 @@ import (
 // DB is the PostgreSQL connected database, retrieve it using GetDatabase()
 var DB *pg.DB
 
+// dbLogger is the logger attached to the database in order to print the SQL statements
+type dbLogger struct{}
+
 // Init establishes the PostgreSQL connection
 func Init(env map[string]string) {
 	var (
@@ -51,6 +54,9 @@ func Setup(dbUser, dbPassword, dbHost, dbPort, dbName string) {
 
 	db := pg.Connect(pgOptions)
 
+	// Logger
+	db.AddQueryHook(dbLogger{})
+
 	err := testConnection(db)
 	if err != nil {
 		log.Fatal("error connecting to database -> ", err)
@@ -67,4 +73,12 @@ func testConnection(db *pg.DB) error {
 	_, err := db.QueryOne(pg.Scan(&n), "SELECT 1")
 
 	return err
+}
+
+// BeforeQuery executes before a query
+func (d dbLogger) BeforeQuery(q *pg.QueryEvent) {}
+
+// AfterQuery executes after a query
+func (d dbLogger) AfterQuery(q *pg.QueryEvent) {
+	log.Println(q.FormattedQuery())
 }
