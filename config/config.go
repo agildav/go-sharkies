@@ -14,7 +14,7 @@ func Init() map[string]string {
 	err := godotenv.Load()
 
 	if err != nil {
-		log.Fatal("error loading .env file -> ", err)
+		log.Fatal("error loading the .env file -> ", err)
 	}
 
 	/*
