@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -15,7 +16,6 @@ import (
 
 // // // // // // // // // // // // // // // // // // // // // // // // // //
 var (
-	env        map[string]string
 	err        error
 	dbUser     string
 	dbPassword string
@@ -27,16 +27,17 @@ var (
 
 func init() {
 	// Config setup
-	env, err = godotenv.Read("../../.env")
+	err := godotenv.Load("../../.env")
 	if err != nil {
 		log.Fatal("error loading .env file -> ", err)
 	}
 
-	dbUser = env["TEST_DB_USER"]
-	dbPassword = env["TEST_DB_PASSWORD"]
-	dbHost = env["TEST_DB_HOST"]
-	dbPort = env["TEST_DB_PORT"]
-	dbName = env["TEST_DB_NAME"]
+	// DB Config
+	dbUser = os.Getenv("TEST_DB_USER")
+	dbPassword = os.Getenv("TEST_DB_PASSWORD")
+	dbHost = os.Getenv("TEST_DB_HOST")
+	dbPort = os.Getenv("TEST_DB_PORT")
+	dbName = os.Getenv("TEST_DB_NAME")
 
 	// DB
 	db.Setup(dbUser, dbPassword, dbHost, dbPort, dbName)

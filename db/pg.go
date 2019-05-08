@@ -48,7 +48,7 @@ func Setup(dbUser, dbPassword, dbHost, dbPort, dbName string) {
 	pgOptions := &pg.Options{
 		User:     dbUser,
 		Password: dbPassword,
-		Addr:     dbHost + dbPort,
+		Addr:     dbHost + ":" + dbPort,
 		Database: dbName,
 	}
 

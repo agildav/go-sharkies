@@ -26,12 +26,12 @@ func Init() (*echo.Echo, map[string]string) {
 // Start runs the server
 func Start() {
 	e, env := Init()
-	var port = env["APP_PORT"]
+	var port = env["PORT"]
 
 	e.HideBanner = true
 
 	s := &http.Server{
-		Addr:         port,
+		Addr:         ":" + port,
 		ReadTimeout:  45 * time.Second,
 		WriteTimeout: 45 * time.Second,
 	}
