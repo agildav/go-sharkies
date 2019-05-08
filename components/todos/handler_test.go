@@ -27,9 +27,11 @@ var (
 
 func init() {
 	// Config setup
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		log.Fatal("error loading .env file -> ", err)
+	if os.Getenv("APP_ENV") != "production" {
+		err := godotenv.Load("../../.env")
+		if err != nil {
+			log.Fatal("error loading .env file -> ", err)
+		}
 	}
 
 	// DB Config
