@@ -8,6 +8,7 @@ The .env file located at the root of the project must have:
 
 ```
 # APP Config
+APP_ENV = "<environment(development, test, production, etc)>"
 PORT = "<port>"
 
 # DB Config - Dev

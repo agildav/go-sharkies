@@ -11,10 +11,16 @@ import (
 // Init gets all the environment variables
 func Init() map[string]string {
 	env := make(map[string]string)
-	err := godotenv.Load()
+	const envProduction string = "production"
 
-	if err != nil {
-		log.Fatal("error loading the .env file -> ", err)
+	// Don't read .env files when deployed to Heroku for example
+	//! Make sure the APP_ENV is present there
+	if os.Getenv("APP_ENV") != envProduction {
+		err := godotenv.Load()
+
+		if err != nil {
+			log.Fatal("error loading .env file -> ", err)
+		}
 	}
 
 	/*
@@ -22,6 +28,7 @@ func Init() map[string]string {
 	*/
 
 	// # APP Config
+	env["APP_ENV"] = os.Getenv("APP_ENV")
 	env["PORT"] = os.Getenv("PORT")
 
 	// DB Config

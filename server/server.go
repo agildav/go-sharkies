@@ -18,6 +18,7 @@ func Init() (*echo.Echo, map[string]string) {
 	e, env := dispatcher.Init()
 
 	log.Println(":: Server ready, took", time.Since(init))
+	log.Println(":: App env -> ", env["APP_ENV"])
 	return e, env
 }
 
