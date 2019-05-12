@@ -16,7 +16,7 @@ type Shark struct {
 	Name        string `json:"name"`
 	Bname       string `json:"bname"`
 	Description string `json:"description,omitempty"`
-	Image       string `json:"image"`
+	Image       string `json:"image,omitempty"`
 }
 
 // // // // // // // // // // // // // // // // // // // // // // // // // //
