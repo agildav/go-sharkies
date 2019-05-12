@@ -422,4 +422,25 @@ func Test_PatchShark(t *testing.T) {
 			assert.Equal(t, expectedJSON, rec.Body.String())
 		}
 	})
+
+	t.Run("returns an error when modifying id", func(t *testing.T) {
+		json := `{"id":999}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("2")
+
+		sharkJSON := `"error patching shark"`
+		expectedJSON := string(sharkJSON + "\n")
+
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			assert.Equal(t, expectedJSON, rec.Body.String())
+		}
+	})
 }
