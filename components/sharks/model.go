@@ -204,3 +204,30 @@ func (s Shark) deleteAll() (string, error) {
 
 	return "all sharks deleted", nil
 }
+
+// patchShark edits an existing shark
+func (s Shark) patchShark(id int64, shark *Shark) (string, error) {
+	init := time.Now()
+
+	pg := db.GetDatabase()
+
+	res, err := pg.Model(shark).Where("id = ?", id).UpdateNotNull()
+	if err != nil {
+		log.Println(err)
+		log.Printf("err in -> %v", time.Since(init))
+		return "", err
+	}
+
+	rowsAffected := res.RowsAffected()
+
+	if rowsAffected <= 0 {
+		err := fmt.Errorf("error -> could not add shark")
+
+		log.Println(err)
+		log.Printf("err in -> %v", time.Since(init))
+		return "", err
+	}
+
+	log.Printf("rows affected -> %v in %v", rowsAffected, time.Since(init))
+	return "shark patched", nil
+}

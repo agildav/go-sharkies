@@ -345,3 +345,81 @@ func Test_deleteSharks(t *testing.T) {
 		}
 	})
 }
+
+func Test_PatchShark(t *testing.T) {
+	/*
+		!: Add new cases here
+	*/
+
+	t.Run("returns shark patched", func(t *testing.T) {
+		json := `{"name":"Test Name patched two"}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("2")
+
+		sharkJSON := `"shark patched"`
+		expectedJSON := string(sharkJSON + "\n")
+
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			if assert.Equal(t, http.StatusOK, rec.Code) {
+				assert.Equal(t, expectedJSON, rec.Body.String())
+
+				// re-insert the original shark and go back to the previous state
+				shark := new(Shark)
+				var id int64 = 2
+				shark.deleteShark(id)
+
+				newshark := &Shark{ID: 2, Name: "Zebra Bullhead Shark", Bname: "Heterodontus zebra", Description: "Description of zebra shark", Image: "Image of zebra shark"}
+				shark.addShark(newshark)
+			}
+		}
+	})
+
+	t.Run("returns an error when invalid id", func(t *testing.T) {
+		json := `{"name":"Test Name patched two"}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("a")
+
+		sharkJSON := `"error parsing id"`
+		expectedJSON := string(sharkJSON + "\n")
+
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			assert.Equal(t, expectedJSON, rec.Body.String())
+		}
+	})
+
+	t.Run("returns an error when non-existent id", func(t *testing.T) {
+		json := `{"name":"Test Name patched two"}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("999")
+
+		sharkJSON := `"error patching shark"`
+		expectedJSON := string(sharkJSON + "\n")
+
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			assert.Equal(t, expectedJSON, rec.Body.String())
+		}
+	})
+}
