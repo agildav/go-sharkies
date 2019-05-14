@@ -9,6 +9,7 @@ import (
 	"github.com/agildav/sharkies/db"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"net/http"
 )
 
 // // // // // // // // // // // // // // // // // // // // // //
@@ -18,6 +19,10 @@ func Init() (*echo.Echo, map[string]string) {
 	env := config.Init()
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		// Allow from any origin
+		AllowMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	}))
 
 	db.Init(env)
 
