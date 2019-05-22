@@ -35,11 +35,12 @@ func (s Shark) findAll() ([]Shark, error) {
 		cID    = "id"
 		cName  = "name"
 		cBname = "bname"
+		cImage = "image"
 	)
 
 	var sharks []Shark
 	order := fmt.Sprintf("%s", cID+" "+"ASC")
-	err := pg.Model(&sharks).Column(cID, cName, cBname).Order(order).Select()
+	err := pg.Model(&sharks).Column(cID, cName, cBname, cImage).Order(order).Select()
 	if err != nil {
 		log.Println(err)
 		log.Printf("err in -> %v", time.Since(init))

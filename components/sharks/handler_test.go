@@ -66,7 +66,7 @@ func Test_getSharks(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath("/")
 
-		sharksJSON := `[{"id":1,"name":"Basking Shark","bname":"Cetorhinus maximus"},{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra"}]`
+		sharksJSON := `[{"id":1,"name":"Basking Shark","bname":"Cetorhinus maximus","image":"Image of basking shark"},{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra","image":"Image of zebra shark"}]`
 		expectedJSON := string(sharksJSON + "\n")
 
 		// Assertions
@@ -82,7 +82,7 @@ func Test_getSharks(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath("/sharks")
 
-		sharksJSON := `[{"id":1,"name":"Basking Shark","bname":"Cetorhinus maximus"},{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra"}]`
+		sharksJSON := `[{"id":1,"name":"Basking Shark","bname":"Cetorhinus maximus","image":"Image of basking shark"},{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra","image":"Image of zebra shark"}]`
 		expectedJSON := string(sharksJSON + "\n")
 
 		// Assertions
