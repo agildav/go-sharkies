@@ -4,12 +4,12 @@ import (
 	/*
 		!: Add new components to be dispatched here
 	*/
-	"github.com/agildav/sharkies/components/sharks"
-	"github.com/agildav/sharkies/config"
-	"github.com/agildav/sharkies/db"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"net/http"
+	"sharkies/components/sharks"
+	"sharkies/config"
+	"sharkies/db"
 )
 
 // // // // // // // // // // // // // // // // // // // // // //

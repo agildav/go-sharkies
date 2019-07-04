@@ -2,8 +2,8 @@ package sharks
 
 import (
 	"fmt"
-	"github.com/agildav/sharkies/db"
 	"log"
+	"sharkies/db"
 
 	"time"
 )

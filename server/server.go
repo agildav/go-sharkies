@@ -1,10 +1,10 @@
 package server
 
 import (
-	"github.com/agildav/sharkies/dispatcher"
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
+	"sharkies/dispatcher"
 	"time"
 )
 

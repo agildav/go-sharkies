@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/agildav/sharkies/db"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
+	"sharkies/db"
 )
 
 // // // // // // // // // // // // // // // // // // // // // // // // // //
