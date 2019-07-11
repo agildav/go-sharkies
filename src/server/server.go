@@ -12,13 +12,12 @@ import (
 
 // Init initializes the router
 func Init() (*echo.Echo, map[string]string) {
-	init := time.Now()
-	log.Println(":: Server init")
+
+	log.Println(":: Server, starting")
 
 	e, env := router.Init()
 
-	log.Println(":: Server ready, took", time.Since(init))
-	log.Println(":: App env -> ", env["APP_ENV"])
+	log.Println(":: App env,", env["APP_ENV"])
 	return e, env
 }
 
@@ -26,6 +25,7 @@ func Init() (*echo.Echo, map[string]string) {
 
 // Start runs the server
 func Start() {
+	init := time.Now()
 	e, env := Init()
 	var port = env["PORT"]
 
@@ -36,6 +36,12 @@ func Start() {
 		ReadTimeout:  45 * time.Second,
 		WriteTimeout: 45 * time.Second,
 	}
-	log.Println(":: Server listening on", port)
-	e.Logger.Fatal(e.StartServer(s))
+
+	log.Println(":: Server, ready in", time.Since(init))
+	err := e.StartServer(s)
+	if err != nil {
+		log.Println(":: Server, FAIL in", time.Since(init))
+		e.Logger.Fatal(err)
+	}
+
 }

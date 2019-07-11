@@ -42,7 +42,7 @@ func setDatabase(database *pg.DB) {
 
 // Setup connects to PostgreSQL and sets a database
 func Setup(dbUser, dbPassword, dbHost, dbPort, dbName string) {
-	log.Println(":: PostgreSQL init")
+	log.Println(":: PostgreSQL, starting")
 	init := time.Now()
 
 	pgOptions := &pg.Options{
@@ -54,17 +54,17 @@ func Setup(dbUser, dbPassword, dbHost, dbPort, dbName string) {
 
 	db := pg.Connect(pgOptions)
 
-	// Logger
-	db.AddQueryHook(dbLogger{})
-
 	err := testConnection(db)
 	if err != nil {
 		log.Fatal("error connecting to database -> ", err)
 	}
 
+	// Logger
+	db.AddQueryHook(dbLogger{})
+
 	setDatabase(db)
 
-	log.Println(":: PostgreSQL ready, took", time.Since(init))
+	log.Println(":: PostgreSQL, ready in", time.Since(init))
 }
 
 // testConnection checks if a client is connected to the database
