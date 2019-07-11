@@ -1,15 +1,15 @@
-package dispatcher
+package router
 
 import (
 	/*
-		!: Add new components to be dispatched here
+		!: Add new components here
 	*/
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"net/http"
-	"sharkies/components/sharks"
 	"sharkies/config"
 	"sharkies/db"
+	"sharkies/src/api/sharks"
 )
 
 // // // // // // // // // // // // // // // // // // // // // //
@@ -19,16 +19,17 @@ func Init() (*echo.Echo, map[string]string) {
 	env := config.Init()
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	// Allow from any origin with these methods
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		// Allow from any origin
 		AllowMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}))
 
 	db.Init(env)
 
 	/*
-		!: Add new components initializations here
+		!: Add new controllers here
 	*/
+
 	sharks.Init(e)
 
 	return e, env

@@ -9,8 +9,8 @@ import (
 
 // // // // // // // // // // // // // // // // // // // // // //
 
-// DB is the PostgreSQL connected database, retrieve it using GetDatabase()
-var DB *pg.DB
+// db is the PostgreSQL connected database, retrieve it using GetDatabase()
+var db *pg.DB
 
 // dbLogger is the logger attached to the database in order to print the SQL statements
 type dbLogger struct{}
@@ -32,12 +32,12 @@ func Init(env map[string]string) {
 
 // GetDatabase returns the database connected to PostgreSQL
 func GetDatabase() *pg.DB {
-	return DB
+	return db
 }
 
 // setDatabase assings the database pointer
-func setDatabase(db *pg.DB) {
-	DB = db
+func setDatabase(database *pg.DB) {
+	db = database
 }
 
 // Setup connects to PostgreSQL and sets a database
