@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// // // // // // // // // // // // // // // // // // // // // //
+// ----------------------------------------------------------------------
 
 // db is the PostgreSQL connected database, retrieve it using GetDatabase()
 var db *pg.DB
@@ -28,7 +28,7 @@ func Init(env map[string]string) {
 	Setup(dbUser, dbPassword, dbHost, dbPort, dbName)
 }
 
-// // // // // // // // // // // // // // // // // // // // // //
+// ----------------------------------------------------------------------
 
 // GetDatabase returns the database connected to PostgreSQL
 func GetDatabase() *pg.DB {

@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// // // // // // // // // // // // // // // // // // // // // // //
+// ----------------------------------------------------------------------
 
 // Init initializes the router
 func Init() (*echo.Echo, map[string]string) {
@@ -22,7 +22,7 @@ func Init() (*echo.Echo, map[string]string) {
 	return e, env
 }
 
-// // // // // // // // // // // // // // // // // // // // // //
+// ----------------------------------------------------------------------
 
 // Start runs the server
 func Start() {

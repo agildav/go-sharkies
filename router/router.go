@@ -12,7 +12,7 @@ import (
 	"sharkies/src/api/sharks"
 )
 
-// // // // // // // // // // // // // // // // // // // // // //
+// ----------------------------------------------------------------------
 
 // Init registers all the routes and env variables
 func Init() (*echo.Echo, map[string]string) {

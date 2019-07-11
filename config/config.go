@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// // // // // // // // // // // // // // // // // // // // // //
+// ----------------------------------------------------------------------
 
 // Init gets all the environment variables
 func Init() map[string]string {
