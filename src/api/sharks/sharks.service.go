@@ -8,18 +8,8 @@ import (
 	"time"
 )
 
-// // // // // // // // // // // // // // // // // // // // // // // // // //s
-
-// Shark represents a shark table
-type Shark struct {
-	ID          int64  `json:"id"`
-	Name        string `json:"name"`
-	Bname       string `json:"bname"`
-	Description string `json:"description,omitempty"`
-	Image       string `json:"image,omitempty"`
-}
-
 // // // // // // // // // // // // // // // // // // // // // // // // // //
+
 /*
 	!: Add new methods here
 */
@@ -27,7 +17,6 @@ type Shark struct {
 // findAll looks for all the sharks and orders them by id asc
 func (s Shark) findAll() ([]Shark, error) {
 	init := time.Now()
-
 	pg := db.GetDatabase()
 
 	// Columns to select
@@ -74,7 +63,6 @@ func (s Shark) findAll() ([]Shark, error) {
 // findByID looks for a shark with @id
 func (s Shark) findByID(id int64) (Shark, error) {
 	init := time.Now()
-
 	pg := db.GetDatabase()
 
 	shark := Shark{ID: id}
@@ -104,7 +92,6 @@ func (s Shark) findByID(id int64) (Shark, error) {
 // addShark inserts a new shark
 func (s Shark) addShark(shark *Shark) (string, error) {
 	init := time.Now()
-
 	pg := db.GetDatabase()
 
 	query := `INSERT into sharks("id", "name", "bname", "description", "image") VALUES (?id, ?name, ?bname, ?description, ?image)`
@@ -134,7 +121,6 @@ func (s Shark) addShark(shark *Shark) (string, error) {
 // deleteShark deletes a shark with @id
 func (s Shark) deleteShark(id int64) (string, error) {
 	init := time.Now()
-
 	pg := db.GetDatabase()
 
 	var shark Shark
@@ -166,7 +152,6 @@ func (s Shark) deleteShark(id int64) (string, error) {
 // deleteAll truncates the table
 func (s Shark) deleteAll() (string, error) {
 	init := time.Now()
-
 	pg := db.GetDatabase()
 
 	beforeCount, err := pg.Model((*Shark)(nil)).Count()
@@ -210,7 +195,6 @@ func (s Shark) deleteAll() (string, error) {
 // patchShark edits an existing shark
 func (s Shark) patchShark(id int64, shark *Shark) (string, error) {
 	init := time.Now()
-
 	pg := db.GetDatabase()
 
 	res, err := pg.Model(shark).Where("id = ?", id).UpdateNotNull()

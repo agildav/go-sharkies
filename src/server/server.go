@@ -4,18 +4,18 @@ import (
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
-	"sharkies/dispatcher"
+	"sharkies/router"
 	"time"
 )
 
 // // // // // // // // // // // // // // // // // // // // // // //
 
-// Init initializes the dispatcher
+// Init initializes the router
 func Init() (*echo.Echo, map[string]string) {
 	init := time.Now()
 	log.Println(":: Server init")
 
-	e, env := dispatcher.Init()
+	e, env := router.Init()
 
 	log.Println(":: Server ready, took", time.Since(init))
 	log.Println(":: App env -> ", env["APP_ENV"])

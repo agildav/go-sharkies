@@ -28,7 +28,7 @@ var (
 func init() {
 	// Config setup
 	if os.Getenv("APP_ENV") != "production" {
-		err := godotenv.Load("../../.env")
+		err := godotenv.Load("../../../.env")
 		if err != nil {
 			log.Fatal("error loading .env file -> ", err)
 		}
@@ -55,10 +55,6 @@ func init() {
 */
 
 func Test_getSharks(t *testing.T) {
-
-	/*
-		!: Add new cases here
-	*/
 
 	t.Run("returns the list of sharks at index", func(t *testing.T) {
 		rec := httptest.NewRecorder()
@@ -121,10 +117,6 @@ func Test_getSharks(t *testing.T) {
 
 func Test_getShark(t *testing.T) {
 
-	/*
-		!: Add new cases here
-	*/
-
 	t.Run("returns a shark with id = 2", func(t *testing.T) {
 		rec := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -181,10 +173,6 @@ func Test_getShark(t *testing.T) {
 }
 
 func Test_addShark(t *testing.T) {
-
-	/*
-		!: Add new cases here
-	*/
 
 	t.Run("returns shark inserted", func(t *testing.T) {
 		json := `{"id":3,"name":"Test Name three","bname":"Test Bname three","description":"Test Description three","image":"Test Image three"}`
@@ -251,9 +239,6 @@ func Test_addShark(t *testing.T) {
 }
 
 func Test_deleteShark(t *testing.T) {
-	/*
-		!: Add new cases here
-	*/
 
 	t.Run("returns shark deleted", func(t *testing.T) {
 		rec := httptest.NewRecorder()
@@ -317,9 +302,6 @@ func Test_deleteShark(t *testing.T) {
 }
 
 func Test_deleteSharks(t *testing.T) {
-	/*
-		!: Add new cases here
-	*/
 
 	t.Run("returns all sharks deleted", func(t *testing.T) {
 		rec := httptest.NewRecorder()
@@ -347,9 +329,6 @@ func Test_deleteSharks(t *testing.T) {
 }
 
 func Test_PatchShark(t *testing.T) {
-	/*
-		!: Add new cases here
-	*/
 
 	t.Run("returns shark patched", func(t *testing.T) {
 		json := `{"name":"Test Name patched two"}`
