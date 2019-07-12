@@ -210,65 +210,32 @@ func Test_getShark(t *testing.T) {
 func Test_addShark(t *testing.T) {
 
 	t.Run("returns shark inserted", func(t *testing.T) {
-		json := `{"id":3,"name":"Test Name three","bname":"Test Bname three","description":"Test Description three","image":"Test Image three"}`
-		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(json))
+		newShark := `{"id":3,"name":"Test Name three","bname":"Test Bname three","description":"Test Description three","image":"Test Image three"}`
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(newShark))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 		c.SetPath("/sharks")
 
-		sharkJSON := `"shark inserted"`
-		expectedJSON := string(sharkJSON + "\n")
-
 		// Assertions
 		if assert.NoError(t, addShark(c)) {
+
 			if assert.Equal(t, http.StatusCreated, rec.Code) {
-				assert.Equal(t, expectedJSON, rec.Body.String())
+
+				var gID map[string]int64
+				err := json.Unmarshal([]byte(rec.Body.String()), &gID)
+				if err != nil {
+					log.Fatal("error parsing response body -> ", err)
+				}
+
+				assert.Contains(t, rec.Body.String(), "id")
 
 				// delete the shark and go back to the previous state
 				shark := new(Shark)
-				var id int64 = 3
+				id := gID["id"]
 				shark.deleteShark(id)
 			}
-		}
-	})
-
-	t.Run("returns an error when invalid id", func(t *testing.T) {
-		json := `{"id":a,"name":"Test Name invalid id","bname":"Test Bname invalid id","description":"Test Description invalid id","image":"Test Image invalid id"}`
-		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(json))
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/sharks")
-
-		sharkJSON := `"error binding shark"`
-		expectedJSON := string(sharkJSON + "\n")
-
-		// Assertions
-		if assert.NoError(t, addShark(c)) {
-			assert.Equal(t, http.StatusBadRequest, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
-		}
-	})
-
-	t.Run("returns an error when existing id", func(t *testing.T) {
-		json := `{"id":2,"name":"Test Name existing id","bname":"Test Bname existing id","description":"Test Description existing id","image":"Test Image existing id"}`
-		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(json))
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/sharks")
-
-		sharkJSON := `"error inserting shark"`
-		expectedJSON := string(sharkJSON + "\n")
-
-		// Assertions
-		if assert.NoError(t, addShark(c)) {
-			assert.Equal(t, http.StatusBadRequest, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
 		}
 	})
 }

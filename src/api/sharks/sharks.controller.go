@@ -74,18 +74,21 @@ func addShark(c echo.Context) error {
 	shark := new(Shark)
 	if err := c.Bind(shark); err != nil {
 		log.Println(err)
-		errMsg := "error binding shark"
+		errMsg := map[string]string{"error": "error binding shark"}
+
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 	log.Printf("Body -> %+v", *shark)
 
-	res, err := shark.addShark(shark)
+	id, err := shark.addShark(shark)
 	if err != nil {
-		errMsg := "error inserting shark"
+		errMsg := map[string]string{"error": "error inserting shark"}
+
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
-	return c.JSON(http.StatusCreated, res)
+	generatedID := map[string]int64{"id": id}
+	return c.JSON(http.StatusCreated, generatedID)
 }
 
 // deleteShark removes a shark by id

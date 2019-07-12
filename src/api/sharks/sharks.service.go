@@ -90,18 +90,19 @@ func (s Shark) findByID(id int64) (Shark, error) {
 }
 
 // addShark inserts a new shark
-func (s Shark) addShark(shark *Shark) (string, error) {
+func (s Shark) addShark(shark *Shark) (int64, error) {
 	init := time.Now()
 	pg := db.GetDatabase()
 
-	query := `INSERT into sharks("id", "name", "bname", "description", "image") VALUES (?id, ?name, ?bname, ?description, ?image)`
+	query := `INSERT into sharks("id", "name", "bname", "description", "image") VALUES (?id, ?name, ?bname, ?description, ?image) RETURNING id`
 
 	var sharkModel Shark
 	res, err := pg.Query(&sharkModel, query, *shark)
+
 	if err != nil {
 		log.Println(err)
 		log.Printf("err in -> %v", time.Since(init))
-		return "", err
+		return -1, err
 	}
 
 	rowsAffected := res.RowsAffected()
@@ -111,11 +112,11 @@ func (s Shark) addShark(shark *Shark) (string, error) {
 
 		log.Println(err)
 		log.Printf("err in -> %v", time.Since(init))
-		return "", err
+		return -1, err
 	}
 
 	log.Printf("rows affected -> %v in %v", rowsAffected, time.Since(init))
-	return "shark inserted", nil
+	return sharkModel.ID, nil
 }
 
 // deleteShark deletes a shark with @id
