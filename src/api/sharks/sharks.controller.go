@@ -53,14 +53,14 @@ func getShark(c echo.Context) error {
 	id, err := strconv.ParseInt(sharkID, 10, 64)
 	if err != nil {
 		log.Println(err)
-		errMsg := "error parsing id"
+		errMsg := map[string]string{"error": "error parsing id"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
 	shark := new(Shark)
 	res, err := shark.findByID(id)
 	if err != nil {
-		errMsg := "error obtaining shark"
+		errMsg := map[string]string{"error": "error obtaining shark"}
 		return c.JSON(http.StatusNotFound, errMsg)
 	}
 

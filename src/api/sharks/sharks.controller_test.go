@@ -143,13 +143,18 @@ func Test_getShark(t *testing.T) {
 		c.SetParamNames("id")
 		c.SetParamValues("2")
 
-		sharkJSON := `{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra","description":"Description of zebra shark","image":"Image of zebra shark"}`
-		expectedJSON := string(sharkJSON + "\n")
+		expected := Shark{ID: 2, Name: "Zebra Bullhead Shark", Bname: "Heterodontus zebra", Description: "Description of zebra shark", Image: "Image of zebra shark"}
+		var got Shark
 
 		// Assertions
 		if assert.NoError(t, getShark(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
+
+			if err := json.Unmarshal([]byte(rec.Body.String()), &got); err != nil {
+				log.Fatal("error parsing response body -> ", err)
+			}
+
+			assert.Equal(t, expected, got)
 		}
 	})
 
@@ -161,13 +166,19 @@ func Test_getShark(t *testing.T) {
 		c.SetParamNames("id")
 		c.SetParamValues("a")
 
-		sharkJSON := `"error parsing id"`
-		expectedJSON := string(sharkJSON + "\n")
+		expected := map[string]string{"error": "error parsing id"}
 
 		// Assertions
 		if assert.NoError(t, getShark(c)) {
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
+
+			expectedJSON, err := json.Marshal(expected)
+
+			if err != nil {
+				log.Fatal("error parsing response body -> ", err)
+			}
+
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 		}
 	})
 
@@ -179,13 +190,19 @@ func Test_getShark(t *testing.T) {
 		c.SetParamNames("id")
 		c.SetParamValues("999")
 
-		sharkJSON := `"error obtaining shark"`
-		expectedJSON := string(sharkJSON + "\n")
+		expected := map[string]string{"error": "error obtaining shark"}
 
 		// Assertions
 		if assert.NoError(t, getShark(c)) {
 			assert.Equal(t, http.StatusNotFound, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
+
+			expectedJSON, err := json.Marshal(expected)
+
+			if err != nil {
+				log.Fatal("error parsing response body -> ", err)
+			}
+
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 		}
 	})
 }
