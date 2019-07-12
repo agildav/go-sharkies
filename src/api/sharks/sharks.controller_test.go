@@ -1,6 +1,7 @@
 package sharks
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -62,13 +63,19 @@ func Test_getSharks(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath("/")
 
-		sharksJSON := `[{"id":1,"name":"Basking Shark","bname":"Cetorhinus maximus","image":"Image of basking shark"},{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra","image":"Image of zebra shark"}]`
-		expectedJSON := string(sharksJSON + "\n")
+		expectedCount := 2
+		var got []Shark
 
 		// Assertions
 		if assert.NoError(t, getSharks(c)) {
+
 			assert.Equal(t, http.StatusOK, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
+
+			if err := json.Unmarshal([]byte(rec.Body.String()), &got); err != nil {
+				log.Fatal("error parsing response body -> ", err)
+			}
+
+			assert.Equal(t, expectedCount, len(got))
 		}
 	})
 
@@ -78,13 +85,19 @@ func Test_getSharks(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath("/sharks")
 
-		sharksJSON := `[{"id":1,"name":"Basking Shark","bname":"Cetorhinus maximus","image":"Image of basking shark"},{"id":2,"name":"Zebra Bullhead Shark","bname":"Heterodontus zebra","image":"Image of zebra shark"}]`
-		expectedJSON := string(sharksJSON + "\n")
+		expectedCount := 2
+		var got []Shark
 
 		// Assertions
 		if assert.NoError(t, getSharks(c)) {
+
 			assert.Equal(t, http.StatusOK, rec.Code)
-			assert.Equal(t, expectedJSON, rec.Body.String())
+
+			if err := json.Unmarshal([]byte(rec.Body.String()), &got); err != nil {
+				log.Fatal("error parsing response body -> ", err)
+			}
+
+			assert.Equal(t, expectedCount, len(got))
 		}
 	})
 
@@ -97,13 +110,18 @@ func Test_getSharks(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath("/sharks")
 
-		sharksJSON := `[]`
-		expectedJSON := string(sharksJSON + "\n")
+		expectedCount := 0
+		var got []Shark
 
 		// Assertions
 		if assert.NoError(t, getSharks(c)) {
 			if assert.Equal(t, http.StatusOK, rec.Code) {
-				assert.Equal(t, expectedJSON, rec.Body.String())
+
+				if err := json.Unmarshal([]byte(rec.Body.String()), &got); err != nil {
+					log.Fatal("error parsing response body -> ", err)
+				}
+
+				assert.Equal(t, expectedCount, len(got))
 
 				// adds the shark and go back to the previous state
 				newshark1 := &Shark{ID: 1, Name: "Basking Shark", Bname: "Cetorhinus maximus", Description: "Description of basking shark", Image: "Image of basking shark"}
