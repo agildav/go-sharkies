@@ -19,6 +19,7 @@ import (
 )
 
 // ----------------------------------------------------------------------
+
 var (
 	err        error
 	dbUser     string
@@ -246,68 +247,83 @@ func Test_addShark(t *testing.T) {
 	})
 }
 
-// func Test_deleteShark(t *testing.T) {
+func Test_deleteShark(t *testing.T) {
 
-// 	t.Run("returns shark deleted", func(t *testing.T) {
-// 		rec := httptest.NewRecorder()
-// 		req := httptest.NewRequest(http.MethodDelete, "/", nil)
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("2")
+	t.Run("returns shark deleted", func(t *testing.T) {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
 
-// 		sharkJSON := `"shark deleted"`
-// 		expectedJSON := string(sharkJSON + "\n")
+		s := new(Shark)
+		sharks, _ := s.findAll()
 
-// 		// Assertions
-// 		if assert.NoError(t, deleteShark(c)) {
-// 			if assert.Equal(t, http.StatusOK, rec.Code) {
-// 				assert.Equal(t, expectedJSON, rec.Body.String())
+		rand.Seed(time.Now().UnixNano())
+		idx := 0 + rand.Intn(len(sharks)-0+1-1)
 
-// 				// adds the shark and go back to the previous state
-// 				newshark := &Shark{ID: 2, Name: "Zebra Bullhead Shark", Bname: "Heterodontus zebra", Description: "Description of zebra shark", Image: "Image of zebra shark"}
-// 				shark := new(Shark)
-// 				shark.addShark(newshark)
-// 			}
-// 		}
-// 	})
+		genID := sharks[idx].ID
+		id := strconv.FormatInt(genID, 10)
 
-// 	t.Run("returns an error when invalid id", func(t *testing.T) {
-// 		rec := httptest.NewRecorder()
-// 		req := httptest.NewRequest(http.MethodDelete, "/", nil)
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("a")
+		c.SetParamValues(id)
 
-// 		sharkJSON := `"error parsing id"`
-// 		expectedJSON := string(sharkJSON + "\n")
+		sharkJSON := map[string]string{"msg": "shark deleted"}
 
-// 		// Assertions
-// 		if assert.NoError(t, deleteShark(c)) {
-// 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-// 			assert.Equal(t, expectedJSON, rec.Body.String())
-// 		}
-// 	})
+		// Assertions
+		if assert.NoError(t, deleteShark(c)) {
+			if assert.Equal(t, http.StatusOK, rec.Code) {
+				expectedJSON, err := json.Marshal(sharkJSON)
 
-// 	t.Run("returns an error when non-existent id", func(t *testing.T) {
-// 		rec := httptest.NewRecorder()
-// 		req := httptest.NewRequest(http.MethodDelete, "/", nil)
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("999")
+				if err != nil {
+					log.Fatal("error parsing expected response -> ", err)
+				}
 
-// 		sharkJSON := `"error deleting shark"`
-// 		expectedJSON := string(sharkJSON + "\n")
+				assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 
-// 		// Assertions
-// 		if assert.NoError(t, deleteShark(c)) {
-// 			assert.Equal(t, http.StatusNotFound, rec.Code)
-// 			assert.Equal(t, expectedJSON, rec.Body.String())
-// 		}
-// 	})
-// }
+				// adds the shark and go back to the previous state
+				newshark := sharks[idx]
+				shark := new(Shark)
+				shark.addShark(&newshark)
+			}
+		}
+	})
+
+	// t.Run("returns an error when invalid id", func(t *testing.T) {
+	// 	rec := httptest.NewRecorder()
+	// 	req := httptest.NewRequest(http.MethodDelete, "/", nil)
+	// 	c := e.NewContext(req, rec)
+	// 	c.SetPath("/sharks/:id")
+	// 	c.SetParamNames("id")
+	// 	c.SetParamValues("a")
+
+	// 	sharkJSON := `"error parsing id"`
+	// 	expectedJSON := string(sharkJSON + "\n")
+
+	// 	// Assertions
+	// 	if assert.NoError(t, deleteShark(c)) {
+	// 		assert.Equal(t, http.StatusBadRequest, rec.Code)
+	// 		assert.Equal(t, expectedJSON, rec.Body.String())
+	// 	}
+	// })
+
+	// t.Run("returns an error when non-existent id", func(t *testing.T) {
+	// 	rec := httptest.NewRecorder()
+	// 	req := httptest.NewRequest(http.MethodDelete, "/", nil)
+	// 	c := e.NewContext(req, rec)
+	// 	c.SetPath("/sharks/:id")
+	// 	c.SetParamNames("id")
+	// 	c.SetParamValues("999")
+
+	// 	sharkJSON := `"error deleting shark"`
+	// 	expectedJSON := string(sharkJSON + "\n")
+
+	// 	// Assertions
+	// 	if assert.NoError(t, deleteShark(c)) {
+	// 		assert.Equal(t, http.StatusNotFound, rec.Code)
+	// 		assert.Equal(t, expectedJSON, rec.Body.String())
+	// 	}
+	// })
+}
 
 func Test_deleteSharks(t *testing.T) {
 

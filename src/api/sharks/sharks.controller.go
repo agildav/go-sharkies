@@ -100,18 +100,18 @@ func deleteShark(c echo.Context) error {
 	id, err := strconv.ParseInt(sharkID, 10, 64)
 	if err != nil {
 		log.Println(err)
-		errMsg := "error parsing id"
+		errMsg := map[string]string{"error": "error parsing id"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
 	shark := new(Shark)
 	res, err := shark.deleteShark(id)
 	if err != nil {
-		errMsg := "error deleting shark"
+		errMsg := map[string]string{"error": "error deleting shark"}
 		return c.JSON(http.StatusNotFound, errMsg)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, map[string]string{"msg": res})
 }
 
 // deleteSharks removes all the sharks
