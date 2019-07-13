@@ -181,7 +181,7 @@ func Test_getShark(t *testing.T) {
 			expectedJSON, err := json.Marshal(expected)
 
 			if err != nil {
-				log.Fatal("error parsing response body -> ", err)
+				log.Fatal("error parsing expected response -> ", err)
 			}
 
 			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
@@ -205,7 +205,7 @@ func Test_getShark(t *testing.T) {
 			expectedJSON, err := json.Marshal(expected)
 
 			if err != nil {
-				log.Fatal("error parsing response body -> ", err)
+				log.Fatal("error parsing expected response -> ", err)
 			}
 
 			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
@@ -309,32 +309,35 @@ func Test_addShark(t *testing.T) {
 // 	})
 // }
 
-// func Test_deleteSharks(t *testing.T) {
+func Test_deleteSharks(t *testing.T) {
 
-// 	t.Run("returns all sharks deleted", func(t *testing.T) {
-// 		rec := httptest.NewRecorder()
-// 		req := httptest.NewRequest(http.MethodDelete, "/", nil)
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks")
+	t.Run("returns all sharks deleted", func(t *testing.T) {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks")
 
-// 		sharksJSON := `"all sharks deleted"`
-// 		expectedJSON := string(sharksJSON + "\n")
+		sharksJSON := map[string]string{"msg": "all sharks deleted"}
+		expectedJSON, err := json.Marshal(sharksJSON)
+		if err != nil {
+			log.Fatal("error parsing response body -> ", err)
+		}
 
-// 		// Assertions
-// 		if assert.NoError(t, deleteSharks(c)) {
-// 			if assert.Equal(t, http.StatusOK, rec.Code) {
-// 				assert.Equal(t, expectedJSON, rec.Body.String())
+		// Assertions
+		if assert.NoError(t, deleteSharks(c)) {
+			if assert.Equal(t, http.StatusOK, rec.Code) {
+				assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 
-// 				// adds the shark and go back to the previous state
-// 				newshark1 := &Shark{ID: 1, Name: "Basking Shark", Bname: "Cetorhinus maximus", Description: "Description of basking shark", Image: "Image of basking shark"}
-// 				newshark2 := &Shark{ID: 2, Name: "Zebra Bullhead Shark", Bname: "Heterodontus zebra", Description: "Description of zebra shark", Image: "Image of zebra shark"}
-// 				shark := new(Shark)
-// 				shark.addShark(newshark1)
-// 				shark.addShark(newshark2)
-// 			}
-// 		}
-// 	})
-// }
+				// adds the shark and go back to the previous state
+				newshark1 := &Shark{Name: "Basking Shark", Bname: "Cetorhinus maximus", Description: "Description of basking shark", Image: "Image of basking shark"}
+				newshark2 := &Shark{Name: "Zebra Bullhead Shark", Bname: "Heterodontus zebra", Description: "Description of zebra shark", Image: "Image of zebra shark"}
+				shark := new(Shark)
+				shark.addShark(newshark1)
+				shark.addShark(newshark2)
+			}
+		}
+	})
+}
 
 // func Test_PatchShark(t *testing.T) {
 

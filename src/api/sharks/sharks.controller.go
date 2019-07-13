@@ -121,11 +121,11 @@ func deleteSharks(c echo.Context) error {
 	shark := new(Shark)
 	res, err := shark.deleteAll()
 	if err != nil {
-		errMsg := "error deleting sharks"
+		errMsg := map[string]string{"error": "error deleting sharks"}
 		return c.JSON(http.StatusNotFound, errMsg)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, map[string]string{"msg": res})
 }
 
 // patchShark edits a shark
