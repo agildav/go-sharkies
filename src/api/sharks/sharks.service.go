@@ -94,7 +94,7 @@ func (s Shark) addShark(shark *Shark) (int64, error) {
 	init := time.Now()
 	pg := db.GetDatabase()
 
-	query := `INSERT into sharks("id", "name", "bname", "description", "image") VALUES (?id, ?name, ?bname, ?description, ?image) RETURNING id`
+	query := `INSERT into sharks("name", "bname", "description", "image") VALUES (?name, ?bname, ?description, ?image) RETURNING id`
 
 	var sharkModel Shark
 	res, err := pg.Query(&sharkModel, query, *shark)
