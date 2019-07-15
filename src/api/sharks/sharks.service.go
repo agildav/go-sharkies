@@ -208,7 +208,7 @@ func (s Shark) patchShark(id int64, shark *Shark) (string, error) {
 	rowsAffected := res.RowsAffected()
 
 	if rowsAffected <= 0 {
-		err := fmt.Errorf("error -> could not add shark")
+		err := fmt.Errorf("error -> could not patch shark")
 
 		log.Println(err)
 		log.Printf("err in -> %v", time.Since(init))

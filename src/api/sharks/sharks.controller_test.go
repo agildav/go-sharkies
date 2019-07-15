@@ -365,98 +365,132 @@ func Test_deleteSharks(t *testing.T) {
 	})
 }
 
-// func Test_PatchShark(t *testing.T) {
+func Test_PatchShark(t *testing.T) {
 
-// 	t.Run("returns shark patched", func(t *testing.T) {
-// 		json := `{"name":"Test Name patched two"}`
-// 		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
-// 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	t.Run("returns shark patched", func(t *testing.T) {
+		newName := `{"name":"Test Name patched two"}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(newName))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
-// 		rec := httptest.NewRecorder()
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("2")
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
 
-// 		sharkJSON := `"shark patched"`
-// 		expectedJSON := string(sharkJSON + "\n")
+		s := new(Shark)
+		sharks, _ := s.findAll()
 
-// 		// Assertions
-// 		if assert.NoError(t, patchShark(c)) {
-// 			if assert.Equal(t, http.StatusOK, rec.Code) {
-// 				assert.Equal(t, expectedJSON, rec.Body.String())
+		rand.Seed(time.Now().UnixNano())
+		idx := 0 + rand.Intn(len(sharks)-0+1-1)
 
-// 				// re-insert the original shark and go back to the previous state
-// 				shark := new(Shark)
-// 				var id int64 = 2
-// 				shark.deleteShark(id)
+		genID := sharks[idx].ID
+		id := strconv.FormatInt(genID, 10)
 
-// 				newshark := &Shark{ID: 2, Name: "Zebra Bullhead Shark", Bname: "Heterodontus zebra", Description: "Description of zebra shark", Image: "Image of zebra shark"}
-// 				shark.addShark(newshark)
-// 			}
-// 		}
-// 	})
+		c.SetParamValues(id)
 
-// 	t.Run("returns an error when invalid id", func(t *testing.T) {
-// 		json := `{"name":"Test Name patched two"}`
-// 		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
-// 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		sharkJSON := map[string]string{"msg": "shark patched"}
 
-// 		rec := httptest.NewRecorder()
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("a")
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			if assert.Equal(t, http.StatusOK, rec.Code) {
+				expectedJSON, err := json.Marshal(sharkJSON)
 
-// 		sharkJSON := `"error parsing id"`
-// 		expectedJSON := string(sharkJSON + "\n")
+				if err != nil {
+					log.Fatal("error parsing expected response -> ", err)
+				}
 
-// 		// Assertions
-// 		if assert.NoError(t, patchShark(c)) {
-// 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-// 			assert.Equal(t, expectedJSON, rec.Body.String())
-// 		}
-// 	})
+				assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 
-// 	t.Run("returns an error when non-existent id", func(t *testing.T) {
-// 		json := `{"name":"Test Name patched two"}`
-// 		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
-// 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+				// re-insert the original shark and go back to the previous state
+				shark := new(Shark)
+				shark.deleteShark(genID)
 
-// 		rec := httptest.NewRecorder()
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("999")
+				shark.addShark(&sharks[idx])
+			}
+		}
+	})
 
-// 		sharkJSON := `"error patching shark"`
-// 		expectedJSON := string(sharkJSON + "\n")
+	t.Run("returns an error when invalid id", func(t *testing.T) {
+		newName := `{"name":"Test Name patched two"}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(newName))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
-// 		// Assertions
-// 		if assert.NoError(t, patchShark(c)) {
-// 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-// 			assert.Equal(t, expectedJSON, rec.Body.String())
-// 		}
-// 	})
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("a")
 
-// 	t.Run("returns an error when modifying id", func(t *testing.T) {
-// 		json := `{"id":999}`
-// 		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(json))
-// 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		sharkJSON := map[string]string{"error": "error parsing id"}
 
-// 		rec := httptest.NewRecorder()
-// 		c := e.NewContext(req, rec)
-// 		c.SetPath("/sharks/:id")
-// 		c.SetParamNames("id")
-// 		c.SetParamValues("2")
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			expectedJSON, err := json.Marshal(sharkJSON)
+			if err != nil {
+				log.Fatal("error parsing expected response -> ", err)
+			}
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
+		}
+	})
 
-// 		sharkJSON := `"error patching shark"`
-// 		expectedJSON := string(sharkJSON + "\n")
+	t.Run("returns an error when non-existent id", func(t *testing.T) {
+		newName := `{"name":"Test Name patched two"}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(newName))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
-// 		// Assertions
-// 		if assert.NoError(t, patchShark(c)) {
-// 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-// 			assert.Equal(t, expectedJSON, rec.Body.String())
-// 		}
-// 	})
-// }
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("-1")
+
+		sharkJSON := map[string]string{"error": "error patching shark"}
+
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			expectedJSON, err := json.Marshal(sharkJSON)
+			if err != nil {
+				log.Fatal("error parsing expected response -> ", err)
+			}
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
+		}
+	})
+
+	t.Run("returns an error when modifying id", func(t *testing.T) {
+		newID := `{"id":999}`
+		req := httptest.NewRequest(http.MethodPatch, "/", strings.NewReader(newID))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+
+		s := new(Shark)
+		sharks, _ := s.findAll()
+
+		rand.Seed(time.Now().UnixNano())
+		idx := 0 + rand.Intn(len(sharks)-0+1-1)
+
+		genID := sharks[idx].ID
+		id := strconv.FormatInt(genID, 10)
+
+		c.SetParamValues(id)
+
+		sharkJSON := map[string]string{"error": "error patching shark"}
+
+		// Assertions
+		if assert.NoError(t, patchShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			expectedJSON, err := json.Marshal(sharkJSON)
+
+			if err != nil {
+				log.Fatal("error parsing expected response -> ", err)
+			}
+
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
+		}
+	})
+}
