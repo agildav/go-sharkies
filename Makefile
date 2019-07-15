@@ -14,3 +14,5 @@ run: build
 	./$(BINARY_NAME)
 test:
 	$(GO_TEST) ./... -count=1
+test-v:
+	$(GO_TEST) ./... -count=1 -v

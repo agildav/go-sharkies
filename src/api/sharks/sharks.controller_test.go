@@ -265,6 +265,9 @@ func Test_deleteShark(t *testing.T) {
 		genID := sharks[idx].ID
 		id := strconv.FormatInt(genID, 10)
 
+		shark := new(Shark)
+		currentShark, _ := shark.findByID(genID)
+
 		c.SetParamValues(id)
 
 		sharkJSON := map[string]string{"msg": "shark deleted"}
@@ -281,9 +284,7 @@ func Test_deleteShark(t *testing.T) {
 				assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 
 				// adds the shark and go back to the previous state
-				newshark := sharks[idx]
-				shark := new(Shark)
-				shark.addShark(&newshark)
+				shark.addShark(&currentShark)
 			}
 		}
 	})
@@ -384,7 +385,11 @@ func Test_PatchShark(t *testing.T) {
 		idx := 0 + rand.Intn(len(sharks)-0+1-1)
 
 		genID := sharks[idx].ID
+		log.Printf("%v", sharks[idx])
 		id := strconv.FormatInt(genID, 10)
+
+		shark := new(Shark)
+		currentShark, _ := shark.findByID(genID)
 
 		c.SetParamValues(id)
 
@@ -402,10 +407,8 @@ func Test_PatchShark(t *testing.T) {
 				assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
 
 				// re-insert the original shark and go back to the previous state
-				shark := new(Shark)
 				shark.deleteShark(genID)
-
-				shark.addShark(&sharks[idx])
+				shark.addShark(&currentShark)
 			}
 		}
 	})
