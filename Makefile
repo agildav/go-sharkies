@@ -5,7 +5,7 @@ GO_TEST= go test
 BINARY_NAME= sharkies
 
 all: test build
-build:
+build: clean
 	$(GO_BUILD) -o $(BINARY_NAME) -v
 clean:
 	$(GO_CLEAN)
@@ -14,3 +14,5 @@ run: build
 	./$(BINARY_NAME)
 test:
 	$(GO_TEST) ./... -count=1
+test-v:
+	$(GO_TEST) ./... -count=1 -v

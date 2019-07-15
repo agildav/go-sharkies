@@ -53,14 +53,14 @@ func getShark(c echo.Context) error {
 	id, err := strconv.ParseInt(sharkID, 10, 64)
 	if err != nil {
 		log.Println(err)
-		errMsg := "error parsing id"
+		errMsg := map[string]string{"error": "error parsing id"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
 	shark := new(Shark)
 	res, err := shark.findByID(id)
 	if err != nil {
-		errMsg := "error obtaining shark"
+		errMsg := map[string]string{"error": "error obtaining shark"}
 		return c.JSON(http.StatusNotFound, errMsg)
 	}
 
@@ -74,18 +74,21 @@ func addShark(c echo.Context) error {
 	shark := new(Shark)
 	if err := c.Bind(shark); err != nil {
 		log.Println(err)
-		errMsg := "error binding shark"
+		errMsg := map[string]string{"error": "error binding shark"}
+
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 	log.Printf("Body -> %+v", *shark)
 
-	res, err := shark.addShark(shark)
+	id, err := shark.addShark(shark)
 	if err != nil {
-		errMsg := "error inserting shark"
+		errMsg := map[string]string{"error": "error inserting shark"}
+
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
-	return c.JSON(http.StatusCreated, res)
+	generatedID := map[string]int64{"id": id}
+	return c.JSON(http.StatusCreated, generatedID)
 }
 
 // deleteShark removes a shark by id
@@ -97,18 +100,18 @@ func deleteShark(c echo.Context) error {
 	id, err := strconv.ParseInt(sharkID, 10, 64)
 	if err != nil {
 		log.Println(err)
-		errMsg := "error parsing id"
+		errMsg := map[string]string{"error": "error parsing id"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
 	shark := new(Shark)
 	res, err := shark.deleteShark(id)
 	if err != nil {
-		errMsg := "error deleting shark"
+		errMsg := map[string]string{"error": "error deleting shark"}
 		return c.JSON(http.StatusNotFound, errMsg)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, map[string]string{"msg": res})
 }
 
 // deleteSharks removes all the sharks
@@ -118,11 +121,11 @@ func deleteSharks(c echo.Context) error {
 	shark := new(Shark)
 	res, err := shark.deleteAll()
 	if err != nil {
-		errMsg := "error deleting sharks"
+		errMsg := map[string]string{"error": "error deleting sharks"}
 		return c.JSON(http.StatusNotFound, errMsg)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, map[string]string{"msg": res})
 }
 
 // patchShark edits a shark
@@ -134,23 +137,23 @@ func patchShark(c echo.Context) error {
 	id, err := strconv.ParseInt(sharkID, 10, 64)
 	if err != nil {
 		log.Println(err)
-		errMsg := "error parsing id"
+		errMsg := map[string]string{"error": "error parsing id"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
 	shark := new(Shark)
 	if err = c.Bind(shark); err != nil {
 		log.Println(err)
-		errMsg := "error binding shark"
+		errMsg := map[string]string{"error": "error binding shark"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 	log.Printf("Body -> %+v", *shark)
 
 	res, err := shark.patchShark(id, shark)
 	if err != nil {
-		errMsg := "error patching shark"
+		errMsg := map[string]string{"error": "error patching shark"}
 		return c.JSON(http.StatusBadRequest, errMsg)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, map[string]string{"msg": res})
 }
