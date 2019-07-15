@@ -288,41 +288,51 @@ func Test_deleteShark(t *testing.T) {
 		}
 	})
 
-	// t.Run("returns an error when invalid id", func(t *testing.T) {
-	// 	rec := httptest.NewRecorder()
-	// 	req := httptest.NewRequest(http.MethodDelete, "/", nil)
-	// 	c := e.NewContext(req, rec)
-	// 	c.SetPath("/sharks/:id")
-	// 	c.SetParamNames("id")
-	// 	c.SetParamValues("a")
+	t.Run("returns an error when invalid id", func(t *testing.T) {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("a")
 
-	// 	sharkJSON := `"error parsing id"`
-	// 	expectedJSON := string(sharkJSON + "\n")
+		sharkJSON := map[string]string{"error": "error parsing id"}
 
-	// 	// Assertions
-	// 	if assert.NoError(t, deleteShark(c)) {
-	// 		assert.Equal(t, http.StatusBadRequest, rec.Code)
-	// 		assert.Equal(t, expectedJSON, rec.Body.String())
-	// 	}
-	// })
+		// Assertions
+		if assert.NoError(t, deleteShark(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			expectedJSON, err := json.Marshal(sharkJSON)
 
-	// t.Run("returns an error when non-existent id", func(t *testing.T) {
-	// 	rec := httptest.NewRecorder()
-	// 	req := httptest.NewRequest(http.MethodDelete, "/", nil)
-	// 	c := e.NewContext(req, rec)
-	// 	c.SetPath("/sharks/:id")
-	// 	c.SetParamNames("id")
-	// 	c.SetParamValues("999")
+			if err != nil {
+				log.Fatal("error parsing expected response -> ", err)
+			}
 
-	// 	sharkJSON := `"error deleting shark"`
-	// 	expectedJSON := string(sharkJSON + "\n")
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
+		}
+	})
 
-	// 	// Assertions
-	// 	if assert.NoError(t, deleteShark(c)) {
-	// 		assert.Equal(t, http.StatusNotFound, rec.Code)
-	// 		assert.Equal(t, expectedJSON, rec.Body.String())
-	// 	}
-	// })
+	t.Run("returns an error when non-existent id", func(t *testing.T) {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		c := e.NewContext(req, rec)
+		c.SetPath("/sharks/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("-1")
+
+		sharkJSON := map[string]string{"error": "error deleting shark"}
+
+		// Assertions
+		if assert.NoError(t, deleteShark(c)) {
+			assert.Equal(t, http.StatusNotFound, rec.Code)
+			expectedJSON, err := json.Marshal(sharkJSON)
+
+			if err != nil {
+				log.Fatal("error parsing expected response -> ", err)
+			}
+
+			assert.Equal(t, string(expectedJSON), strings.TrimSuffix(rec.Body.String(), "\n"))
+		}
+	})
 }
 
 func Test_deleteSharks(t *testing.T) {
