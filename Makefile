@@ -1,3 +1,6 @@
+# Load env variables, installation required
+# go get github.com/joho/godotenv/cmd/godotenv
+GODOTENV= godotenv
 # Go parameters
 GO_BUILD= go build
 GO_CLEAN= go clean
@@ -11,8 +14,8 @@ clean:
 	$(GO_CLEAN)
 	rm -f $(BINARY_NAME)
 run: build
-	./$(BINARY_NAME)
+	$(GODOTENV) ./$(BINARY_NAME)
 test:
-	$(GO_TEST) ./... -count=1
+	$(GODOTENV) $(GO_TEST) ./... -count=1
 test-v:
-	$(GO_TEST) ./... -count=1 -v
+	$(GODOTENV) $(GO_TEST) ./... -count=1 -v

@@ -2,20 +2,18 @@ package sharks
 
 import (
 	"encoding/json"
+	"github.com/labstack/echo"
+	"github.com/stretchr/testify/assert"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sharkies/db"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/joho/godotenv"
-	"github.com/labstack/echo"
-	"github.com/stretchr/testify/assert"
-	"sharkies/db"
 )
 
 // ----------------------------------------------------------------------
@@ -31,14 +29,6 @@ var (
 )
 
 func init() {
-	// Config setup
-	if os.Getenv("APP_ENV") != "production" {
-		err := godotenv.Load("../../../.env")
-		if err != nil {
-			log.Fatal("error loading .env file -> ", err)
-		}
-	}
-
 	// DB Config
 	dbUser = os.Getenv("TEST_DB_USER")
 	dbPassword = os.Getenv("TEST_DB_PASSWORD")
@@ -195,7 +185,7 @@ func Test_getShark(t *testing.T) {
 		c := e.NewContext(req, rec)
 		c.SetPath("/sharks/:id")
 		c.SetParamNames("id")
-		c.SetParamValues("999")
+		c.SetParamValues("-1")
 
 		expected := map[string]string{"error": "error obtaining shark"}
 

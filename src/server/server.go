@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
+	"os"
 	"sharkies/router"
 	"time"
 )
@@ -11,14 +12,14 @@ import (
 // ----------------------------------------------------------------------
 
 // Init initializes the router
-func Init() (*echo.Echo, map[string]string) {
+func Init() *echo.Echo {
 
 	log.Println(":: Server, starting")
 
-	e, env := router.Init()
+	e := router.Init()
 
-	log.Println(":: App env,", env["APP_ENV"])
-	return e, env
+	log.Println(":: App env,", os.Getenv("APP_ENV"))
+	return e
 }
 
 // ----------------------------------------------------------------------
@@ -26,8 +27,8 @@ func Init() (*echo.Echo, map[string]string) {
 // Start runs the server
 func Start() {
 	init := time.Now()
-	e, env := Init()
-	var port = env["PORT"]
+	e := Init()
+	var port = os.Getenv("PORT")
 
 	e.HideBanner = true
 
