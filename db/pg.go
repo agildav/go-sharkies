@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/go-pg/pg"
+	"os"
 
 	"log"
 	"time"
@@ -16,13 +17,13 @@ var db *pg.DB
 type dbLogger struct{}
 
 // Init establishes the PostgreSQL connection
-func Init(env map[string]string) {
+func Init() {
 	var (
-		dbUser     = env["DB_USER"]
-		dbPassword = env["DB_PASSWORD"]
-		dbHost     = env["DB_HOST"]
-		dbPort     = env["DB_PORT"]
-		dbName     = env["DB_NAME"]
+		dbUser     = os.Getenv("DB_USER")
+		dbPassword = os.Getenv("DB_PASSWORD")
+		dbHost     = os.Getenv("DB_HOST")
+		dbPort     = os.Getenv("DB_PORT")
+		dbName     = os.Getenv("DB_NAME")
 	)
 
 	Setup(dbUser, dbPassword, dbHost, dbPort, dbName)

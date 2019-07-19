@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"net/http"
-	"sharkies/config"
 	"sharkies/db"
 	"sharkies/src/api/sharks"
 )
@@ -15,8 +14,9 @@ import (
 // ----------------------------------------------------------------------
 
 // Init registers all the routes and env variables
-func Init() (*echo.Echo, map[string]string) {
-	env := config.Init()
+func Init() *echo.Echo {
+	db.Init()
+
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	// Allow from any origin with these methods
@@ -24,13 +24,11 @@ func Init() (*echo.Echo, map[string]string) {
 		AllowMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}))
 
-	db.Init(env)
-
 	/*
 		!: Add new controllers here
 	*/
 
 	sharks.Init(e)
 
-	return e, env
+	return e
 }

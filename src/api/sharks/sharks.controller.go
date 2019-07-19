@@ -17,11 +17,11 @@ func Init(e *echo.Echo) {
 
 	e.GET("/", getSharks)
 	e.GET("/sharks", getSharks)
-	e.GET("/sharks/:id", getShark)
 	e.POST("/sharks", addShark)
-	e.DELETE("/sharks/:id", deleteShark)
 	e.DELETE("/sharks", deleteSharks)
+	e.GET("/sharks/:id", getShark)
 	e.PATCH("/sharks/:id", patchShark)
+	e.DELETE("/sharks/:id", deleteShark)
 }
 
 // ----------------------------------------------------------------------
